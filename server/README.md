@@ -15,18 +15,10 @@ const User = {
 };
 ```
 
-#### Avatars
-```javascript
-const Avatar = {
-    order: Number,
-    url: String
-};
-```
-
 #### Chat
 ```javascript
 const Chat = {
-    reciver: User,
+    users: [User],
     lastMessage: String,
     lastDateMessage: Date,
     newMessagesCount: Number
@@ -35,8 +27,9 @@ const Chat = {
 #### Messages
 ```javascript
 const Message = {
-    chat: String
-    text: String
+    chat: String,
+    user: User,
+    text: String,
     createdAt: Date
 };
 ```

@@ -1,25 +1,27 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const { disablePagination, fastJoin } = require('feathers-hooks-common');
-const { updateLastMessageInChat } = require('./after');
+const { checkIfExistsChat } = require('./before');
 
 const resolvers = {
   joins: {
-    user: () => async (message, context) => {
+    users: () => async (chat, context) => {
       const Users = context.app.service('users');
-      message.user = await Users.get(message.user, { paginate: false });
-      return message;
-    }
+      chat.users = await Users.find({
+        query: { _id: { $in: chat.users } },
+        paginate: false
+      });
+      return chat;
+    },
   }
 };
 
 module.exports = {
   before: {
     // all: [ authenticate('jwt') ],
-    find: [
-      disablePagination()
-    ],
+    all: [],
+    find: [ disablePagination() ],
     get: [],
-    create: [],
+    create: [ checkIfExistsChat() ],
     update: [],
     patch: [],
     remove: []
@@ -31,9 +33,7 @@ module.exports = {
     ],
     find: [],
     get: [],
-    create: [
-      updateLastMessageInChat()
-    ],
+    create: [],
     update: [],
     patch: [],
     remove: []

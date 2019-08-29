@@ -14,7 +14,7 @@ export default [
     component: SearchChat 
   },
   {
-    path: '/messages',
+    path: '/messages/:chatId',
     component: Messages
   },
   {

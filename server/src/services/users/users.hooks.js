@@ -1,5 +1,5 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
-
+const { disablePagination } = require('feathers-hooks-common');
 const {
   hashPassword, protect
 } = require('@feathersjs/authentication-local').hooks;
@@ -7,8 +7,11 @@ const {
 module.exports = {
   before: {
     all: [],
-    find: [ authenticate('jwt') ],
-    get: [ authenticate('jwt') ],
+    find: [
+      disablePagination()
+      // authenticate('jwt'),
+    ],
+    // get: [ authenticate('jwt') ],
     create: [ hashPassword() ],
     update: [ hashPassword(),  authenticate('jwt') ],
     patch: [ hashPassword(),  authenticate('jwt') ],

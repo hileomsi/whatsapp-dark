@@ -6,16 +6,19 @@
     "@feathersjs/authentication-client": "^1.0.11",
     "@feathersjs/feathers": "^3.3.1",
     "@feathersjs/socketio-client": "^1.2.1",
+    "final-form": "^4.18.5",
     "framework7": "^4.4.10",
     "framework7-react": "^4.4.10",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-final-form": "^6.3.0",
+    "react-final-form-hooks": "^2.0.1",
     "react-scripts": "3.1.1",
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.3.2",
-    "usefeathers": "1.0.2"
+    "usefeathers": "1.0.3"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -3,47 +3,33 @@ import { Page, Navbar, Subnavbar, Searchbar, Link } from 'framework7-react';
 import ChatsList from '../../components/ChatsList';
 import ChatListLoading from '../../components/ChatsListLoading';
 import BlockError from '../../components/BlockError';
-
-const chats = [
-  {
-    name: 'Hiléo Andersson',
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/imcoding/128.jpg',
-    lastMessage: 'Oii moça, dormiu bem?',
-    newMessagesCount: 1,
-    lastDateMessage: Date.now()
-  },
-  {
-    name: 'Hiléo Andersson',
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/imcoding/128.jpg',
-    lastMessage: 'Oii moça, dormiu bem?',
-    newMessagesCount: 0,
-    lastDateMessage: Date.now()
-  },
-  {
-    name: 'Hiléo Andersson',
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/imcoding/128.jpg',
-    lastMessage: 'Oii moça, dormiu bem?',
-    newMessagesCount: 0,
-    lastDateMessage: Date.now()
-  },
-  {
-    name: 'Hiléo Andersson',
-    avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/imcoding/128.jpg',
-    lastMessage: 'Oii moça, dormiu bem?',
-    newMessagesCount: 4,
-    lastDateMessage: Date.now()
-  }
-];
+import * as storage from '../../helpers/storage';
+import { getImageAvatar } from '../../helpers/avatars';
+import { useFind } from 'usefeathers';
 
 export default function Chats(props) { 
   const { f7router } = props;
+  const user = localStorage.getItem('user');
+  const [chats, loading, error] = useFind('chats', {
+    $limit: -1,
+    $sort: { createdAt: -1 } 
+  }, { paginate: false, realtime: true });
+
+  function mappingChat(chat) {
+    const friend = chat.users.find(obj => obj._id !== user._id);
+    return {
+      ...chat,
+      name: friend.name,
+      avatar: getImageAvatar(friend.avatar)
+    };
+  }
 
   function handleSearchChat() {
     f7router.navigate('/searchChat');
   }
 
   function handleNavigateChat(chatId) {
-    f7router.navigate('/messages');
+    f7router.navigate(`/messages/${chatId}`);
   }
 
   return (
@@ -52,22 +38,24 @@ export default function Chats(props) {
         title='Chats'
         large
       >
-        {/* <Link slot='nav-left'>Light</Link> */}
-        <Link slot='nav-right' color='green' onClick={handleSearchChat}>Nova Conversa</Link>
+        <Link slot='nav-right' color='green' onClick={handleSearchChat}>New chat</Link>
         <Subnavbar inner={false}>
           <Searchbar color='green'></Searchbar>
         </Subnavbar>
       </Navbar>
-
-      {/* <BlockError
-        title='Aconteceu um erro'
-        message='Erro interno do servidor.'
-      /> */}
-      {/* <ChatListLoading /> */}
-      <ChatsList
-        chats={chats}
-        onClickChat={handleNavigateChat}
-      />
+      {error && (
+        <BlockError
+          title='Aconteceu um erro'
+          message='Erro interno do servidor.'
+        />
+      )}
+      {loading && <ChatListLoading />}
+      {!error && (
+        <ChatsList
+          chats={chats.map(mappingChat)}
+          onClickChat={handleNavigateChat}
+        />
+      )}
     </Page>
   );
 }

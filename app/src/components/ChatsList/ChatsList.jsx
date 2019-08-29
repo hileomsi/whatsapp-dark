@@ -8,6 +8,12 @@ export default function ChatsList(props) {
 
   return (
     <List mediaList>
+      {chats.length === 0 && (
+        <ListItem
+          title='Click in new chat'
+          subtitle='Search your friend and have fun.'
+        />
+      )}
       {chats.map(chat => (
         <ListItem
           link="#"
